@@ -1,0 +1,19 @@
+
+cd Play.Common
+dotnet add package MongoDB.Driver --version 2.18.0 
+Later versions have issues with Cosmos DB
+
+cd Play.Common
+dotnet add package Microsoft.Extensions.Configuration
+dotnet add package Microsoft.Extensions.Configuration.Binder
+dotnet add package Microsoft.Extensions.DependencyInjection
+
+pack your project outside of Play.Common folder
+dotnet pack -o ..\..\..\packages\ -> For powershell
+dotnet pack -p:PackageVersion=1.0.1 -o ..\..\..\packages\
+
+dotnet pack -o ../../../packages/ -> For Terminal
+dotnet pack -p:PackageVersion=1.0.1 -o ../../../packages/ -> For Terminal
+
+create git
+git init

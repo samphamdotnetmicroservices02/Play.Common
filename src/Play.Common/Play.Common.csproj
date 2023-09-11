@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <PackageDescription>Common library used by Play Economy services.</PackageDescription>
+    <Authors>Sam Pham</Authors>
+    <Company>Sam Pham company</Company>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,4 +7,5 @@ public class ServiceSettings
     public string Authority { get; init; }
 
     public string MessageBroker { get; init; }
+    public string KeyVaultName { get; init; }
 }

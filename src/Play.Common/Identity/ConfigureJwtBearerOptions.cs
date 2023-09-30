@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,12 @@ public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions
             options.Authority = serviceSettings.Authority;
             options.Audience = serviceSettings.ServiceName;
 
+            //Juse use for apllications run on local Kubernetes and not use HTTPS
+            if (serviceSettings.IsKubernetesLocal.Equals("true", StringComparison.OrdinalIgnoreCase))
+            {
+                options.RequireHttpsMetadata = false;
+            }
+            
             /*
             * if you don't do this, things will work just fine. However, you may find issues moving forward as you're
             * trying to integrate with other kinds of identity providers that use more standard claims that you may

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Play.Common.Settings;
 
@@ -38,8 +39,10 @@ public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions
             if (serviceSettings.IsKubernetesLocal.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 options.RequireHttpsMetadata = false;
+                IdentityModelEventSource.ShowPII = true;
+                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             }
-            
+
             /*
             * if you don't do this, things will work just fine. However, you may find issues moving forward as you're
             * trying to integrate with other kinds of identity providers that use more standard claims that you may

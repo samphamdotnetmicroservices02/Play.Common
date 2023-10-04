@@ -8,5 +8,5 @@ public class ServiceSettings
 
     public string MessageBroker { get; init; }
     public string KeyVaultName { get; init; }
-    public string IsKubernetesLocal { get; init; }
+    public string IsKubernetesLocal { get; init; } = string.Empty;
 }

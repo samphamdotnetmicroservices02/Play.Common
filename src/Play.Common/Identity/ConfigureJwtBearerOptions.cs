@@ -39,8 +39,18 @@ public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions
             if (serviceSettings.IsKubernetesLocal.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 options.RequireHttpsMetadata = false;
+                //ShowPII = true is for debug, it will log more information to trace
                 IdentityModelEventSource.ShowPII = true;
-                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+
+                /*
+                * the problem is that when other services perform their actions, it will call identity service
+                * through serviceSettings.Authority, which is url of api gateway and because kubernetes does not
+                * allow service inside kubernetes access to external IP, so we need to configure sth or use direct
+                * identity url inside kubernetes
+                */
+                //url service inside kubernetes <service-name>.<namespace>.svc.cluster.local
+                //https://github.com/IdentityServer/IdentityServer4/issues/2450
+                options.MetadataAddress = $"{serviceSettings.InternalAuthority}/.well-known/openid-configuration";
             }
 
             /*

@@ -65,4 +65,4 @@ jobs:
         -p:RepositoryUrl=https://github.com/${{github.repository_owner}}/Play.Common \
         -o packages
     - name: Publish
-      run: dotnet nuget push packages/*.nupkg --api-key ${{secrets.GH_PAT}}
+      run: dotnet nuget push packages/*.nupkg

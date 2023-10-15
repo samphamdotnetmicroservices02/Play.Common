@@ -14,7 +14,7 @@ dotnet nuget push ..\packages\Play.Common.$version.nupkg --api-key $gh_pat --sou
 --source "github" comes from Play.Infra
 ```
 
-```mac
+```zsh
 version="1.0.17"
 owner="samphamdotnetmicroservices02"
 gh_pat="[PAT HERE]"

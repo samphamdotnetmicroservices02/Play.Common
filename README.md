@@ -25,3 +25,6 @@ dotnet nuget push ../packages/Play.Common.$version.nupkg --api-key $gh_pat --sou
 
 --source "github" comes from Play.Infra
 ```
+
+## Required repository secrets for Github workflow
+GH_PAT: Created in Github user profile --> Settings --> Developer settings --> Personal access token

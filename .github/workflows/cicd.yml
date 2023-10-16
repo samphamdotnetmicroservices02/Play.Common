@@ -33,7 +33,7 @@ jobs:
       # anothrNick/github-tag-action@1.67.0 that we use above (please check document)
       new_version: ${{ steps.tag_bump.outputs.new_tag }}
   
-  package-and-publish-common:
+  package-and-publish-contracts:
 
     runs-on: ubuntu-latest
     needs: generate-version
@@ -55,7 +55,7 @@ jobs:
         # this "NUGET_AUTH_TOKEN" environment variable that the Nuget client already understands and he knows
         # that if it finds a token over there, it will use it to authenticate with whatever sources it has to
         # use.
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_AUTH_TOKEN: ${{ secrets.GH_PAT }}
         
     - name: Pack
       run: | 

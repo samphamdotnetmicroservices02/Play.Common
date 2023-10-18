@@ -1,10 +1,6 @@
 using System;
 using System.Reflection;
-using GreenPipes;
-using GreenPipes.Configurators;
 using MassTransit;
-using MassTransit.Definition;
-using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Play.Common.Settings;
@@ -22,7 +18,7 @@ public static class Extensions
         Action<IRetryConfigurator> configureRetries = null)
     {
         ServiceSettings serviceSettings = config.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
-        switch(serviceSettings.MessageBroker?.ToUpper())
+        switch (serviceSettings.MessageBroker?.ToUpper())
         {
             case ServiceBus:
                 services.AddMassTransitWithServiceBus(configureRetries);
@@ -47,12 +43,6 @@ public static class Extensions
                 configure.UsingPlayEconomyRabbitMq(configureRetries);
             });
 
-        /*
-        * this is the service that actually starts the RabbitMq bus, so that messages can be published to the different exchanges
-        *   and queues in RabbitMq
-        */
-        services.AddMassTransitHostedService();
-
         return services;
     }
 
@@ -67,22 +57,16 @@ public static class Extensions
                 configure.UsingPlayEconomyAzureServiceBus(configureRetries);
             });
 
-        /*
-        * this is the service that actually starts the RabbitMq bus, so that messages can be published to the different exchanges
-        *   and queues in RabbitMq
-        */
-        services.AddMassTransitHostedService();
-
         return services;
     }
 
     public static void UsingPlayEconomyMessageBroker(
-        this IServiceCollectionBusConfigurator configure,
+        this IBusRegistrationConfigurator configure,
         IConfiguration config,
         Action<IRetryConfigurator> configureRetries = null)
     {
         ServiceSettings serviceSettings = config.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
-        switch(serviceSettings.MessageBroker?.ToUpper())
+        switch (serviceSettings.MessageBroker?.ToUpper())
         {
             case ServiceBus:
                 configure.UsingPlayEconomyAzureServiceBus(configureRetries);
@@ -95,7 +79,7 @@ public static class Extensions
     }
 
     public static void UsingPlayEconomyRabbitMq(
-        this IServiceCollectionBusConfigurator configure,
+        this IBusRegistrationConfigurator configure,
         Action<IRetryConfigurator> configureRetries = null)
     {
         configure.UsingRabbitMq((context, configurator) =>
@@ -128,7 +112,7 @@ public static class Extensions
     }
 
     public static void UsingPlayEconomyAzureServiceBus(
-        this IServiceCollectionBusConfigurator configure,
+        this IBusRegistrationConfigurator configure,
         Action<IRetryConfigurator> configureRetries = null)
     {
         configure.UsingAzureServiceBus((context, configurator) =>

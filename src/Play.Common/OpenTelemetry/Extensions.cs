@@ -1,3 +1,4 @@
+using System;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,7 +51,10 @@ public static class Extensions
                 //     options.AgentHost = jaegerSettings.Host;
                 //     options.AgentPort = jaegerSettings.Port;
                 // });
-                .AddOtlpExporter();
+                .AddOtlpExporter(options => {
+                    var jaegerSettings = config.GetSection(nameof(JaegerSettings)).Get<JaegerSettings>();
+                    options.Endpoint = new Uri($"http://{jaegerSettings.Host}:{jaegerSettings.Port}");
+                });
             });
             
             // if consumer has some issues, it will report to Jaeger traces.

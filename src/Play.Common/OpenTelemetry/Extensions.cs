@@ -12,7 +12,7 @@ public static class Extensions
 {
     public static IServiceCollection AddTracing(this IServiceCollection services, IConfiguration config)
     {
-        services.AddOpenTelemetryTracing(builder =>
+        services.AddOpenTelemetry().WithTracing(builder =>
             {
                 var serviceSettings = config.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
@@ -43,16 +43,18 @@ public static class Extensions
                 .AddConsoleExporter()
 
                 //For Jaeger
-                .AddJaegerExporter(options =>
-                {
-                    var jaegerSettings = config.GetSection(nameof(JaegerSettings)).Get<JaegerSettings>();
+                // .AddJaegerExporter(options =>
+                // {
+                //     var jaegerSettings = config.GetSection(nameof(JaegerSettings)).Get<JaegerSettings>();
 
-                    options.AgentHost = jaegerSettings.Host;
-                    options.AgentPort = jaegerSettings.Port;
-                });
-            })
+                //     options.AgentHost = jaegerSettings.Host;
+                //     options.AgentPort = jaegerSettings.Port;
+                // });
+                .AddOtlpExporter();
+            });
+            
             // if consumer has some issues, it will report to Jaeger traces.
-            .AddConsumeObserver<ConsumeObserver>();
+            services.AddConsumeObserver<ConsumeObserver>();
 
         return services;
     }

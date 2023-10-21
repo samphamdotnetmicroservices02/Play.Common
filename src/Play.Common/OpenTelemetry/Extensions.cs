@@ -2,6 +2,7 @@ using System;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Play.Common.MassTransit;
@@ -59,6 +60,31 @@ public static class Extensions
             
             // if consumer has some issues, it will report to Jaeger traces.
             services.AddConsumeObserver<ConsumeObserver>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddMetrics(this IServiceCollection services, IConfiguration config)
+    {
+        /*
+            * add this for microservice to export the metrics into Prometheus, which is our tool or server that is going to be
+            * collecting that information so that we can see later on in a very nice way.
+            */
+            services.AddOpenTelemetry().WithMetrics(builder => 
+            {
+                var settings = config.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
+
+                // the name if this Meter should be matched the name of the Meter you specify in PurchaseStateMachine, which is
+                // "Meter meter = new(settings.ServiceName);" in constructor
+                builder.AddMeter(settings.ServiceName)
+                    .AddMeter("MassTransit")
+                    //capture the metrics of HttpClient and and AspNetCore 
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation()
+                    
+                    //tell OpenTelemetry that we want to export these metrics into a Prometheus.
+                    .AddPrometheusExporter();
+            });
 
         return services;
     }

@@ -108,6 +108,12 @@ public static class Extensions
             }
 
             configurator.UseMessageRetry(configureRetries);
+
+            /*
+            * For Prometheus:
+            * we need to invoke ".UseInstrumentation" and we have to invoke this one when we are configuring our mass transit bus.
+            */
+            configurator.UseInstrumentation(serviceName: serviceSettings.ServiceName);
         });
     }
 
@@ -141,6 +147,12 @@ public static class Extensions
             }
 
             configurator.UseMessageRetry(configureRetries);
+
+             /*
+            * For Prometheus:
+            * we need to invoke ".UseInstrumentation" and we have to invoke this one when we are configuring our mass transit bus.
+            */
+            configurator.UseInstrumentation(serviceName: serviceSettings.ServiceName);
         });
     }
 }

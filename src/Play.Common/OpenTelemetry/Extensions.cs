@@ -80,7 +80,7 @@ public static class Extensions
             // "Meter meter = new(settings.ServiceName);" in constructor
             builder.AddMeter(settings.ServiceName)
                 .AddMeter("MassTransit")
-                .AddMongoDBInstrumentation()
+                //research metrics for mongodb
                 //capture the metrics of HttpClient and and AspNetCore 
                 .AddHttpClientInstrumentation()
                 .AddAspNetCoreInstrumentation()

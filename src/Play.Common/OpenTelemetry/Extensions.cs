@@ -26,6 +26,7 @@ public static class Extensions
                 // The message have been sent, published, and a bunch of other information that's already been immediate by mass transit. We want to make sure that
                 // we also collect that information. And for that we have to use identified for mass transit
                 .AddSource("MassTransit")
+                .AddMongoDBInstrumentation()
 
                 // define or give a name to the trading microservice as a resource within the long tail of traces that are going to be showing up and to do that.
                 // We want to use the method called SetResourceBuilder.
@@ -52,14 +53,15 @@ public static class Extensions
                 //     options.AgentHost = jaegerSettings.Host;
                 //     options.AgentPort = jaegerSettings.Port;
                 // });
-                .AddOtlpExporter(options => {
+                .AddOtlpExporter(options =>
+                {
                     var jaegerSettings = config.GetSection(nameof(JaegerSettings)).Get<JaegerSettings>();
                     options.Endpoint = new Uri($"http://{jaegerSettings.Host}:{jaegerSettings.Port}");
                 });
             });
-            
-            // if consumer has some issues, it will report to Jaeger traces.
-            services.AddConsumeObserver<ConsumeObserver>();
+
+        // if consumer has some issues, it will report to Jaeger traces.
+        services.AddConsumeObserver<ConsumeObserver>();
 
         return services;
     }
@@ -70,21 +72,22 @@ public static class Extensions
             * add this for microservice to export the metrics into Prometheus, which is our tool or server that is going to be
             * collecting that information so that we can see later on in a very nice way.
             */
-            services.AddOpenTelemetry().WithMetrics(builder => 
-            {
-                var settings = config.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
+        services.AddOpenTelemetry().WithMetrics(builder =>
+        {
+            var settings = config.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
-                // the name if this Meter should be matched the name of the Meter you specify in PurchaseStateMachine, which is
-                // "Meter meter = new(settings.ServiceName);" in constructor
-                builder.AddMeter(settings.ServiceName)
-                    .AddMeter("MassTransit")
-                    //capture the metrics of HttpClient and and AspNetCore 
-                    .AddHttpClientInstrumentation()
-                    .AddAspNetCoreInstrumentation()
-                    
-                    //tell OpenTelemetry that we want to export these metrics into a Prometheus.
-                    .AddPrometheusExporter();
-            });
+            // the name if this Meter should be matched the name of the Meter you specify in PurchaseStateMachine, which is
+            // "Meter meter = new(settings.ServiceName);" in constructor
+            builder.AddMeter(settings.ServiceName)
+                .AddMeter("MassTransit")
+                .AddMongoDBInstrumentation()
+                //capture the metrics of HttpClient and and AspNetCore 
+                .AddHttpClientInstrumentation()
+                .AddAspNetCoreInstrumentation()
+
+                //tell OpenTelemetry that we want to export these metrics into a Prometheus.
+                .AddPrometheusExporter();
+        });
 
         return services;
     }
